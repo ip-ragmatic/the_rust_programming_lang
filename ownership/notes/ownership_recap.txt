@@ -1,0 +1,58 @@
+Ownership vs Garbage Collection (GC)
+    A garbage collector operates at runtime adjacent to a running program. The garbage collecter looks through memory to find data
+    that's no longer being used by the program. Or more specifically, the collector checks whether or not the program can reach
+    certain data from within a certain scope and or function-local variable. Then the garbage collector deallocates the unused memory
+    for later use.
+    
+    Benefits
+        - The key benefit of a garbage collection is that it avoids undefined behavior like using freed up memory (happen in C/C++).
+        - also avoids the need for a complex type system to check for undefined behavior (like Rust lol).
+    
+    Drawbacks
+        - an obvious one is performance as it incurs either frequent small overheads (for reference-counting) or infrequent large
+          overheads (for tracing).
+        - a less obvious one is GC can be unpredictable. For example, GC'd languages like Python allow for there to be multiple
+          pointers to the same data within a single scope, so it'll be difficult to predict where data will be GC'd. The other issue
+          is that if there are different variables all pointing to the same data and you mutate the data pointed using one of those
+          variables, then you will mutate the data assigned to the other variables. This is b/c the multiple variables point to the
+          same original data; you mutate one of the variables, you mutate all of them.
+
+The Concepts of Ownership
+
+Ownership at Runtime
+    - Rust allocates local variables in stack frames, which are allocated when a function is called and deallocated when call ends.
+    - Local variables can hold either data (like numbers, booleans, tuples, etc.) or pointers.
+    - Pointers can be created either through boxes (pointers owning data on the heap) or references (non-owning pointers).
+    - Slices are a special kind of reference that refer to a contiguous sequence of data in memory (aka collection).
+        ~ &data[start_idx..end_idx] (end_idx not inclusive)
+        ~ slices contain metadata: ptr (pointer) and len (length of slice)
+
+Ownership at Compile Time
+    - Rust tracks R (read), W (write), and O (own) permissions on each variable. It requires that a variable has appropriate
+      permissions to perform a given operation. This is accomplished using Rust's borrow checker
+    - A variable's permissions can be changed if it's moved or borrowed.
+        ~ A move of a variable with a non-copyable type (like Box<T> or String) requires the RO permissions, and the move 
+          eliminates all permissions on the variable (this rule prevents the use of moved variables).
+    - functions and their local variables consume the permissions of the parameters they interact with.
+        ~ may take ownership, may take the permissions under the constraints defined in the function input definition.
+    - Borrowing a variable (creating a reference to it) temporarily removes some of the variable's permissions. This is until the
+      data being borrowed is no longer used. 
+        ~ An immutable borrow creates an immutable reference, and also disables the borrowed data from being mutated or moved.
+        ~ A mutable borrow creates a mutable reference and disables the borrowed data from being read, written, or moved
+
+Connecting Ownership between Compile-time and Runtime
+    - Rust's permissions are designed to prevent undefined behavior.
+    - one kind of undefined behavior is a use-after-free. this is where freed memory is read or written. Immutable borrows remove
+      the W permission to avoid use-after-free
+    - Another kind of undefined behavior is a double-free. this is where memory is freed twice. Dereferences of references to
+      non-copyable data don't have O permissions so as to avoid double-frees. For example:
+        | fn main() {
+        |     let v = vec![1, 2, 3];     // points to heap-allocated vector
+        |     let v_ref: &Vec<i32> = &v; // immutable reference to pointer v
+        |     let v2 = *v_ref;           // points to heap-allocated vector via immutable reference v_ref
+        |     drop(v2);                  // frees v2 and the heap-allocated vector data v2 points at. v points at freed memory now
+        |     drop(v);                   // this is where double-free occurs. pointer under v used after its pointee is freed
+        | }
+
+For some more insights into the concepts learned in this chapter, look at quiz at the end of 4.5. It talks about some examples of
+ownership, pointers, permissions, and undefined behavior.

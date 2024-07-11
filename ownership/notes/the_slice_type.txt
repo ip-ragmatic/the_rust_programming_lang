@@ -1,0 +1,59 @@
+The Slice Type
+    Slices let you reference a contiguous sequence of elements in a collection rather than the whole collection. A slice
+    is a kind of reference, so it's a non-owning pointer.
+
+String Slices
+    - A string slice is a reference to part of a String. We create slices using a range within brackets by specifying 
+      [starting_index..ending_index], where starting_index is the first position in the slice and ending_index is one more than
+      the last position in the slice.
+    - Slices are special kinds of references because they are "fat" pointers
+        ~ Fat pointers are pointers with metadata. 
+        ~ Here, the metadata is the length of the slice
+        ~ the metadata for string slices are 'ptr' (pointer to particular slice of string) and 'len' (length of slice)
+    - Because slices are references, they also change the permissions on referenced data.
+    - The type that signifies “string slice” is written as '&str'.
+        1| fn first_word(s: &String) -> &str {
+        2|     let bytes = s.as_bytes();
+        3|     for (i, &item) in bytes.iter().enumerate() {
+        4|         if item == b' ' {
+        5|             return &s[0..i];  // returns a slice of s from index 0 to index i
+        6|         }
+        7|     }
+        8|     &s[..]   // returns s but as a slice (a &str type)
+        9| }
+
+
+Range Syntax
+    - With Rust’s '..' range syntax, to start at index zero you can drop the value before the two periods ('0..3' == '..3').
+        ~ same idea applies to the last index of the string, just drop the trailing number.
+
+String Literals are Slices
+    - Recall that string literals are stored inside the binary
+        | let s = "Hello, world!";
+      The type of 's' here is '&str': a slice pointing to that specific point of the binary. This is why string literals are 
+      immutable; '&str' is an immutable reference.
+
+String Slices as Parameters
+    - if we need a parameter for a function to take a string type, use '&str' instead '&String'. Using '&str' allows us to use a
+      function (that handles strings) on both '&String' values and '&str' values if the input type is '&str'.
+        ~ If we have a string slice, we can pass that directly. If we have a 'String', we can pass a slice of the 'String' or a 
+          reference to the String. 
+        ~ This flexibility takes advantage of deref coercions
+
+Other Slices
+    Slices work not only on strings, but also on different types of collections. Like arrays for example. And the notation is
+    the same for arrays as it is for strings.
+        | let a = [1, 2, 3, 4, 5];
+        | let slice = &a[1..3];       // slice
+        | assert_eq!(slice, &[2, 3]);
+
+Quiz 1 Notes
+    1. &str types uses more memory than type &String. on a 64-bit architecture, &String is 8 bytes and &str is 16 bytes. This
+       is because &String is a normal reference that consists of a single pointer, whereas &str has a pointer and a length.
+    2. if something being iterated upon produces an immutable reference to it, regardless of whether the iterated thing originally
+       was defined with W permissions on it, then it is illegal to mutate the thing from inside a for-loop.
+
+Summary:
+    Slices are a special kind of reference that refer to sub-ranges of a sequence, like a string or a vector. At runtime, a slice
+    is represented as a "fat pointer" which contains a pointer to the beginning of the range and a length of the range. One 
+    advantage of slices over index-based ranges is that the slice cannot be invalidated while it's being used.
