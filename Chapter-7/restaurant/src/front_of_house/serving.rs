@@ -1,8 +1,8 @@
 #[allow(dead_code)]
-fn take_order() {}
+pub fn take_order() {}
     
 #[allow(dead_code)]
-fn serve_order() {}
+pub fn serve_order() {}
     
 #[allow(dead_code)]
-fn take_payment() {}
+pub fn take_payment() {}
