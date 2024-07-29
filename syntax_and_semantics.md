@@ -18,6 +18,20 @@
 
 <br/>
 
+`use` is the keyword used to import external crates (libraries) or local project modules.
+
+<br/>
+
+`pub` grants public access to certain items defined in a binary crate's or library crate's modules.
+- when seeing if `pub` access is granted to certain modules and their subsequent items, look at the path to the item. If each component in the path to the item being called is defined with `pub`, then the caller has access to that item.
+
+<br/>
+
+`pub use` lets us re-export items into scope, making it easier to access that item from different scopes when the current one is brought into a particular scope.
+
+<br/>
+
+
 
 ## Methods, functions, and macros
 
