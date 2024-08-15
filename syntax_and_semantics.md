@@ -31,6 +31,24 @@
 
 <br/>
 
+`match` is a type of control-flow construct that checks patterns instead of conditions (like in if-else). You pass a value to match on and establish match "arms" to check which pattern in the arm matches the value. The general structure of `match` looks like:
+```
+match VALUE {
+	PATTERN_1 => EXPRESSION,
+	PATTERN_2 => EXPRESSION,
+	PATTERN_3 => EXPRESSION,
+	}	
+```
+- `match` expressions REQUIRE exhaustiveness, which means that all possible patterns must be covered by the match arms
+	- the pattern `_` will match anything, but never bind to a value
+- By default, `match` statements consume all they can, which means that after matching on VALUE, you can't use VALUE after the `match` code since it was made unavailable
+- *match guards* (an `if` condition) after the pattern in an arm to express more complex ideas than a pattern match can alone
+- The `@` operator lets us create a variable that holds a value at the same time as we’re testing that value for a pattern match. This allows us to:
+	- use the same variable name in each arm, but catch a different case using the pattern after `@`. Structure is `VAR @ PATTERN`
+	- test a value and save it in a variable within one pattern.
+
+<br/>
+
 
 
 ## Methods, functions, and macros

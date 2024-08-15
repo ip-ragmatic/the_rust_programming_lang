@@ -36,14 +36,14 @@ fn to_pig(word: &str) -> String {
                 format!("{}-{}ay", &word[1..], ch)
             }
         }
-        false => format!("{}", word),
+        false => word.to_string()
     }
 }
 
 fn main() {
     let string = "I think; I gOT, it. ::'figured' out!!!🔥✅🔥";
     
-    let text_list = to_list(&string);
+    let text_list = to_list(string);
     let mut pig = Vec::new();
     for word in text_list {
         pig.push(to_pig(word));
