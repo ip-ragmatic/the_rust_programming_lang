@@ -51,7 +51,8 @@ match VALUE {
 
 
 
-## Methods, functions, and macros
+
+## Methods, functions, macros
 
 `.to_string()` converts a string slice `&str` to a `String`
 
@@ -166,5 +167,3 @@ match VALUE {
 <br/>
 
 
-
-## Standard Library stuff
