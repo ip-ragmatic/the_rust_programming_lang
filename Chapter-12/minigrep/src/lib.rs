@@ -41,26 +41,44 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn build(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("mg: minigrep requires @ least 1 pattern to exec a search");
-        }
-
-        let query = args[args.len() - 2].clone();
-        let path = args[args.len() - 1].clone();
-        let mut ignore_case = env::var("IGNORE_CASE").is_ok_and(|val| val == "1");
-
-        // iterate through potential flags slice and match cases
-        args[1..args.len() - 2]
-            .iter()
-            .for_each(|flag| match flag.as_str() {
-                "-U" => ignore_case = true,
-                flag => {
-                    eprintln!("mg: unrecognized flag {flag}");
-                    process::exit(1);
-                }
-            });
-
+    // pub fn build(args: &[String]) -> Result<Config, &'static str> {
+    //     if args.len() < 3 {
+    //         return Err("mg: minigrep requires @ least 1 pattern to exec a search");
+    //     }
+    //     let query = args[args.len() - 2].clone();
+    //     let path = args[args.len() - 1].clone();
+    //     let mut ignore_case = env::var("IGNORE_CASE").is_ok_and(|val| val == "1");
+    //     // iterate through potential flags slice and match cases
+    //     args[1..args.len() - 2]
+    //         .iter()
+    //         .for_each(|flag| match flag.as_str() {
+    //             "-U" => ignore_case = true,
+    //             flag => {
+    //                 eprintln!("mg: unrecognized flag {flag}");
+    //                 process::exit(1);
+    //             }
+    //         });
+    //     Ok(Config {
+    //         query,
+    //         path,
+    //         ignore_case,
+    //     })
+    // }
+    pub fn build<T: Iterator<Item = String>>(mut args: T) -> Result<Config, &'static str> {
+        // TODO implement error msg when no arguments given to minigrep. "mg: minigrep requires @ least 1 pattern to exec a search"
+        // TODO implement a check for flags
+        // TODO implement ignore_case search with -U flag
+        // TODO if only one argument given, search every file in current directory
+        args.next();
+        let query = match args.next() {
+            Some(q) => q,
+            None => return Err("mg: missing query"),
+        };
+        let path = match args.next() {
+            Some(p) => p,
+            None => return Err("mg: missing text to query"),
+        };
+        let ignore_case = env::var("IGNORE_CASE").is_ok_and(|val| val == "1");  // mutable for later
         Ok(Config {
             query,
             path,
