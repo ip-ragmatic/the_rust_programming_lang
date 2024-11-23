@@ -1,0 +1,15 @@
+bin = [
+    { name = "hello-async", path = "./src/hello-async.rs" },
+    { name = "counting", path = "./src/counting.rs" },
+    { name = "messaging", path = "./src/messaging.rs" },
+    { name = "num_fut", path = "./src/num_futures.rs" },
+    { name = "streams", path = "./src/streams.rs" },
+]
+
+[package]
+name = "hello-async"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+trpl = "0.2.0"
