@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #1a1a1d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .error-container {
+            text-align: center;
+        }
+        .wave-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
+        .wave {
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: 50%;
+            left: 50%;
+            background: radial-gradient(circle at 50% 50%, #ff6f61 20%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: wave 6s cubic-bezier(0.6, 0.04, 0.98, 0.335) infinite;
+            border-radius: 50%;
+        }
+        .error-code {
+            font-size: 5rem;
+            margin: 0;
+        }
+        .error-message {
+            font-size: 1.5rem;
+        }
+
+        @keyframes wave {
+            0% {
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(0.95);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="wave-container">
+            <div class="wave"></div>
+        </div>
+        <div class="error-code">404</div>
+        <div class="error-message">Oops! The page you are looking for can't be found.</div>
+    </div>
+</body>
+</html>
